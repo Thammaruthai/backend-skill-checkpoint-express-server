@@ -2,7 +2,7 @@ import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import validateQuestion from "../middleware/validateQuestion.mjs"; //middleware สำหรับ POST question
 import { formatQuestion } from "../utils/formatGETQuestion.mjs"; // format API
-import answerRouter from "./questions_answer.mjs";
+import answerRouter from "./questions_answer.mjs"; 
 
 const questionsRouter = Router();
 
