@@ -5,7 +5,7 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 - [Features](#features)
 - [Requirements](#requirements)
 - [Setup](#setup)
-- [๊Using](#๊Using)
+- [๊Using](#Using)
 
 
 ## Features
