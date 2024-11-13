@@ -2,15 +2,37 @@ import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import validateQuestion from "../middleware/validateQuestion.mjs"; //middleware สำหรับ POST question
 import { formatQuestion } from "../utils/formatGETQuestion.mjs"; // format API
-import answerRouter from "./questions_answer.mjs"; 
+import answerRouter from "./questions_answer.mjs";
 
 const questionsRouter = Router();
 
 // แยก route ย่อย question เพื่อหา answer ตาม Question
 questionsRouter.use("/", answerRouter);
 
+//------------------------------- POST -------------------------------
+// Create a new question
+questionsRouter.post("/", validateQuestion, async (req, res) => {
+  const { title, description, category } = req.body;
+  try {
+    // Insert ข้อมูลตาม Table ใน DB
+    const result = await connectionPool.query(
+      `INSERT INTO questions (title, description, category)
+       VALUES ($1, $2, $3)
+       RETURNING *;`,
+      [title, description, category]
+    );
+
+    res.status(201).json({
+      message: "Question created successfully.",
+      });
+  } catch (error) {
+    console.error("Error creating question:", error);
+    res.status(500).json({ message: "Unable to create question." });
+  }
+});
+
 //------------------------------- GET -------------------------------
-// Get All
+// GET all questions
 questionsRouter.get("/", async (req, res) => {
   try {
     const result = await connectionPool.query(`
@@ -29,44 +51,8 @@ questionsRouter.get("/", async (req, res) => {
     res.status(500).json({ message: "Unable to fetch questions." });
   }
 });
-// GET by query
-questionsRouter.get("/search", async (req, res) => {
-  const { title, category } = req.query;
-  let query = `SELECT * FROM questions WHERE 1=1`;
-  const values = [];
-  
-  //เงื่อนไข title และ category
-  if (title) {
-    query += ` AND title ILIKE $${values.length + 1}`;
-    values.push(`%${title}%`);
-  }
-    if (category) {
-    query += ` AND category ILIKE $${values.length + 1}`;
-    values.push(`%${category}%`);
-  }
- 
-  try {
-    
-    
-    const result = await connectionPool.query(query, values);
 
-    // ถ้าไม่มีข้อมูลส่ง 404
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: `No questions found.` });
-    }
-
-    // ใช้ฟังก์ชัน format ข้อมูลตาม API
-    const formattedData = result.rows.map(formatQuestion);
-
-    res.json({ data: formattedData });
-  } catch (error) {
-    console.error("Error fetching questions by query:", error);
-    res.status(500).json({ message: "Unable to fetch questions." });
-  }
-});
-
-
-// GET by ID
+// GET a question by ID
 questionsRouter.get("/:questionId", async (req, res) => {
   const { questionId } = req.params;
   try {
@@ -89,30 +75,42 @@ questionsRouter.get("/:questionId", async (req, res) => {
   }
 });
 
-//------------------------------- POST -------------------------------
-// ต้องใช้ middleware เช็ค
-questionsRouter.post("/", validateQuestion, async (req, res) => {
-  const { title, description, category } = req.body;
-  try {
-    // Insert ข้อมูลตาม Table ใน DB
-    const result = await connectionPool.query(
-      `INSERT INTO questions (title, description, category)
-       VALUES ($1, $2, $3)
-       RETURNING *;`,
-      [title, description, category]
-    );
+// GET Search questions by title or category
+questionsRouter.get("/search", async (req, res) => {
+  const { title, category } = req.query;
+  let query = `SELECT * FROM questions WHERE 1=1`;
+  const values = [];
 
-    res.status(201).json({
-      message: "Question created successfully.",
-      data: result.rows[0], // ส่งข้อมูลที่ถูกสร้างใหม่กลับไป
-    });
+  //เงื่อนไข title และ category
+  if (title) {
+    query += ` AND title ILIKE $${values.length + 1}`;
+    values.push(`%${title}%`);
+  }
+  if (category) {
+    query += ` AND category ILIKE $${values.length + 1}`;
+    values.push(`%${category}%`);
+  }
+
+  try {
+    const result = await connectionPool.query(query, values);
+
+    // ถ้าไม่มีข้อมูลส่ง 404
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: `No questions found.` });
+    }
+
+    // ใช้ฟังก์ชัน format ข้อมูลตาม API
+    const formattedData = result.rows.map(formatQuestion);
+
+    res.json({ data: formattedData });
   } catch (error) {
-    console.error("Error creating question:", error);
-    res.status(500).json({ message: "Unable to create question." });
+    console.error("Error fetching questions by query:", error);
+    res.status(500).json({ message: "Unable to fetch questions." });
   }
 });
 
 //------------------------------- PUT -------------------------------
+//Update a question by ID
 questionsRouter.put("/:questionId", validateQuestion, async (req, res) => {
   const { title, description, category } = req.body;
   const { questionId } = req.params;
@@ -140,6 +138,7 @@ questionsRouter.put("/:questionId", validateQuestion, async (req, res) => {
 });
 
 //------------------------------- DELETE -------------------------------
+//Delete a question by ID
 questionsRouter.delete("/:questionId", async (req, res) => {
   const { questionId } = req.params;
   try {

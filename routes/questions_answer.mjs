@@ -1,12 +1,35 @@
 import connectionPool from "../utils/db.mjs";
 import { Router } from "express";
 import { formatAnswer } from "../utils/formatGETAnswer.mjs";
+import validateAnswer from "../middleware/validateAnswer.mjs";
 
 const answerRouter = Router();
+//------------------------------- POST -------------------------------
+// Create an answer for a question
+answerRouter.post("/:questionId/answers", validateAnswer, async (req, res) => {
+  const { content } = req.body;
+  const { questionId } = req.params;
+  try {
+    // Insert ข้อมูลตาม Table ใน DB
+    const result = await connectionPool.query(
+      `INSERT INTO answers (question_id, content)
+       VALUES ($1, $2)
+       RETURNING *;`,
+      [questionId, content]
+    );
+
+    res.status(201).json({
+      message: "Question created successfully.",
+    });
+  } catch (error) {
+    console.error("Error creating question:", error);
+    res.status(500).json({ message: "Unable to create question." });
+  }
+});
 
 //------------------------------- GET -------------------------------
 // Get All answer follow questionID
-answerRouter.get("/:questionId/answer", async (req, res) => {
+answerRouter.get("/:questionId/answers", async (req, res) => {
   const { questionId } = req.params;
   try {
     const result = await connectionPool.query(
@@ -31,7 +54,8 @@ answerRouter.get("/:questionId/answer", async (req, res) => {
 
 
 //------------------------------- DELETE -------------------------------
-answerRouter.delete("/:questionId/answer", async (req, res) => {
+// Delete answers for a question
+answerRouter.delete("/:questionId/answers", async (req, res) => {
   const { questionId } = req.params;
   try {
     // ลบ answer_votes ทั้งหมดด ที่เชื่อมกับ answers นี้
