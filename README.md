@@ -22,8 +22,8 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 ## Setup
 1. **Clone the repository**:
    
-   ```git clone https://github.com/Thammaruthai/backend-skill-checkpoint-express-server.git
-   cd qa-platform-api```
+   ```git clone https://github.com/Thammaruthai/backend-skill-checkpoint-express-server.git ```
+   ```cd qa-platform-api```
    
 
 2. **Install dependencies**:
