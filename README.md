@@ -5,7 +5,7 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 - [Features](#features)
 - [Requirements](#requirements)
 - [Setup](#setup)
-- [How to Use the Project](#How to use)
+- [๊Using](#๊Using)
 
 
 ## Features
@@ -46,6 +46,6 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
    Once the server is running, you can access the API at http://localhost:4000
 
 
-## How to use
+## Using
 use PostMan or other RESTFUL API software to CRUD operation
 API Doc is [here](https://docs.google.com/spreadsheets/d/1M68YgfcJ5LqxASjxxIAmaFz3x7CjrfUt5sh1a8KAe2A/edit?gid=0#gid=0)
