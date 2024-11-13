@@ -21,11 +21,14 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 
 ## Setup
 1. **Clone the repository**:
-   git clone https://github.com/Thammaruthai/backend-skill-checkpoint-express-server.git
-   cd qa-platform-api
+   
+   ```git clone https://github.com/Thammaruthai/backend-skill-checkpoint-express-server.git
+   cd qa-platform-api```
+   
 
 2. **Install dependencies**:
-   npm install 
+
+   ```npm install ```
 
 3. **Set up the database**:
    install ProgreSQL
@@ -37,7 +40,7 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
    DATABASE_URL=your_database_connection_string
    
 5. **Run the server**:
-   npm start
+   ```npm start```
 
 6. **Access the API**:
    Once the server is running, you can access the API at http://localhost:4000
