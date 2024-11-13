@@ -5,7 +5,7 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 - [Features](#features)
 - [Requirements](#requirements)
 - [Setup](#setup)
-- [How to Use the Project] (#How to use)
+- [How to Use the Project](#How to use)
 
 
 ## Features
@@ -15,7 +15,7 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 - **Error Handling**: Provides clear error messages for invalid requests.
 
 ## Requirements
-- **Node.js** (version 14 or higher)
+- **Node.js** (version 20 or higher)
 - **PostgreSQL** (for database management)
 - **npm** (for managing dependencies)
 
@@ -29,9 +29,8 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 
 3. **Set up the database**:
    install ProgreSQL
-   SQL scipt here
-   https://gist.githubusercontent.com/napatwongchr/811ef7071003602b94482b3d8c0f32e0/raw/ecd17b04554026fdd8dad0cd24d7b08d3b684fe5/quora-mock.sql
-
+   SQL scipt [here](https://gist.githubusercontent.com/napatwongchr/811ef7071003602b94482b3d8c0f32e0/raw/ecd17b04554026fdd8dad0cd24d7b08d3b684fe5/quora-mock.sql)
+   
 4. **Configure environment variables**:
    Config .env file for port and Database URL
    PORT=4000
@@ -40,9 +39,10 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 5. **Run the server**:
    npm start
 
-6. **Access the API:**:
+6. **Access the API**:
    Once the server is running, you can access the API at http://localhost:4000
 
 
 ## How to use
-use PostMan or other RESTFUL API software to CRUD
+use PostMan or other RESTFUL API software to CRUD operation
+API Doc is [here](https://docs.google.com/spreadsheets/d/1M68YgfcJ5LqxASjxxIAmaFz3x7CjrfUt5sh1a8KAe2A/edit?gid=0#gid=0)
