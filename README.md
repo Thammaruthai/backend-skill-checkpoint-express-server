@@ -48,4 +48,4 @@ A RESTful API for a Q&A platform where users can Create, Update, Delete and Vote
 
 ## Using
 use PostMan or other RESTFUL API software to CRUD operation
-API Doc is [here](https://docs.google.com/spreadsheets/d/1M68YgfcJ5LqxASjxxIAmaFz3x7CjrfUt5sh1a8KAe2A/edit?gid=0#gid=0)
+API Doc is on /api-docs (SwaggerUI)

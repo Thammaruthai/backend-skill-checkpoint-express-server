@@ -8,9 +8,73 @@ const questionsRouter = Router();
 
 // แยก route ย่อย question เพื่อหา answer ตาม Question
 questionsRouter.use("/", answerRouter);
-
+/**
+ * @swagger
+ * tags:
+ *   name: Questions
+ *   description: API for questions in the Q&A platform
+ */
 //------------------------------- POST -------------------------------
 // Create a new question
+/**
+ * @swagger
+ * /questions:
+ *   post:
+ *     summary: Create a new question
+ *     tags: [Questions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The title of the question
+ *               description:
+ *                 type: string
+ *                 description: The detailed description of the question
+ *               category:
+ *                 type: string
+ *                 description: The category of the question
+ *             example:
+ *               title: "What is the capital of France?"
+ *               description: "This is a basic geography question asking about the capital city of France."
+ *               category: "Geography"
+ *     responses:
+ *       201:
+ *         description: Question created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Question created successfully."
+ *       400:
+ *         description: Invalid request data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid request data."
+ *       500:
+ *         description: Unable to create question
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to create question."
+ */
+
 questionsRouter.post("/", validateQuestion, async (req, res) => {
   const { title, description, category } = req.body;
   try {
@@ -33,6 +97,49 @@ questionsRouter.post("/", validateQuestion, async (req, res) => {
 
 //------------------------------- GET -------------------------------
 // GET all questions
+/**
+ * @swagger
+ * /questions:
+ *   get:
+ *     summary: Get all questions
+ *     tags: [Questions]
+ *     responses:
+ *       200:
+ *         description: List of questions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       title:
+ *                         type: string
+ *                         example: "What is the capital of France?"
+ *                       description:
+ *                         type: string
+ *                         example: "This is a basic geography question asking about the capital city of France."
+ *                       category:
+ *                         type: string
+ *                         example: "Geography"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch questions."
+ */
+
 questionsRouter.get("/", async (req, res) => {
   try {
     const result = await connectionPool.query(`
@@ -53,6 +160,65 @@ questionsRouter.get("/", async (req, res) => {
 });
 
 // GET a question by ID
+/**
+ * @swagger
+ * /questions/{questionId}:
+ *   get:
+ *     summary: Get a question by ID
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: path
+ *         name: questionId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to retrieve
+ *     responses:
+ *       200:
+ *         description: A question object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     title:
+ *                       type: string
+ *                       example: "What is the capital of France?"
+ *                     description:
+ *                       type: string
+ *                       example: "This is a basic geography question asking about the capital city of France."
+ *                     category:
+ *                       type: string
+ *                       example: "Geography"
+ *       404:
+ *         description: Question not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Question not found."
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch questions."
+ */
+
+
 questionsRouter.get("/:questionId", async (req, res) => {
   const { questionId } = req.params;
   try {
@@ -76,6 +242,31 @@ questionsRouter.get("/:questionId", async (req, res) => {
 });
 
 // GET Search questions by title or category
+/**
+ * @swagger
+ * /questions/search:
+ *   get:
+ *     summary: Search questions by title or category
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Filter by question title
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filter by question category
+ *     responses:
+ *       200:
+ *         description: List of questions matching criteria
+ *       404:
+ *         description: No questions found
+ *       500:
+ *         description: Server error
+ */
 questionsRouter.get("/search", async (req, res) => {
   const { title, category } = req.query;
   let query = `SELECT * FROM questions WHERE 1=1`;
@@ -111,6 +302,82 @@ questionsRouter.get("/search", async (req, res) => {
 
 //------------------------------- PUT -------------------------------
 //Update a question by ID
+/**
+ * @swagger
+ * /questions/{questionId}:
+ *   put:
+ *     summary: Update a question by ID
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: path
+ *         name: questionId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The updated title of the question
+ *               description:
+ *                 type: string
+ *                 description: The updated description of the question
+ *               category:
+ *                 type: string
+ *                 description: The updated category of the question
+ *             example:
+ *               title: "What is the capital of Germany?"
+ *               description: "Updated question asking about the capital city of Germany."
+ *               category: "Geography"
+ *     responses:
+ *       200:
+ *         description: Question updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Question updated successfully."
+ *       400:
+ *         description: Invalid request data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid request data."
+ *       404:
+ *         description: Question not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Question not found."
+ *       500:
+ *         description: Unable to update question
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to update question."
+ */
+
 questionsRouter.put("/:questionId", validateQuestion, async (req, res) => {
   const { title, description, category } = req.body;
   const { questionId } = req.params;
@@ -139,6 +406,52 @@ questionsRouter.put("/:questionId", validateQuestion, async (req, res) => {
 
 //------------------------------- DELETE -------------------------------
 //Delete a question by ID
+/**
+ * @swagger
+ * /questions/{questionId}:
+ *   delete:
+ *     summary: Delete a question by ID
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: path
+ *         name: questionId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to delete
+ *     responses:
+ *       200:
+ *         description: Question and related data deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Question post has been deleted successfully."
+ *       404:
+ *         description: Question not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Question not found."
+ *       500:
+ *         description: Unable to delete question
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to delete question."
+ */
+
 questionsRouter.delete("/:questionId", async (req, res) => {
   const { questionId } = req.params;
   try {

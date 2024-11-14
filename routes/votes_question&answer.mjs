@@ -3,9 +3,84 @@ import connectionPool from "../utils/db.mjs";
 import validateVote from "../middleware/validateVote.mjs";
 
 const voteRouter = Router();
+/**
+ * @swagger
+ * tags:
+ *   name: Votes
+ *   description: API for voting on questions and answers
+ */
 
 //------------------------------- POST -------------------------------
 // Vote for Question
+/**
+ * @swagger
+ * /questions/{questionId}/vote:
+ *   post:
+ *     summary: Vote on a question
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: questionId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to vote on
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               vote:
+ *                 type: integer
+ *                 enum: [1, -1]
+ *                 description: Vote value, 1 for upvote, -1 for downvote
+ *             example:
+ *               vote: 1
+ *     responses:
+ *       200:
+ *         description: Vote on the question has been recorded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Vote on the question has been recorded successfully."
+ *       400:
+ *         description: Invalid vote value
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid vote value."
+ *       404:
+ *         description: Question not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Question not found."
+ *       500:
+ *         description: Unable to vote on the question
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to vote question."
+ */
+
 voteRouter.post(
   "/questions/:questionId/vote",
   validateVote,
@@ -46,6 +121,75 @@ voteRouter.post(
 
 
 // Vote for Answer
+/**
+ * @swagger
+ * /answer/{answerId}/vote:
+ *   post:
+ *     summary: Vote on an answer
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: answerId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the answer to vote on
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               vote:
+ *                 type: integer
+ *                 enum: [1, -1]
+ *                 description: Vote value, 1 for upvote, -1 for downvote
+ *             example:
+ *               vote: -1
+ *     responses:
+ *       200:
+ *         description: Vote on the answer has been recorded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Vote on the answer has been recorded successfully."
+ *       400:
+ *         description: Invalid vote value
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid vote value."
+ *       404:
+ *         description: Answer not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Answer not found."
+ *       500:
+ *         description: Unable to vote on the answer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to vote answer."
+ */
+
 voteRouter.post(
   "/answer/:answerId/vote",
   validateVote,
